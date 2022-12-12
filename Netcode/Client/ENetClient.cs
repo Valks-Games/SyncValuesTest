@@ -45,7 +45,7 @@ public abstract class ENetClient
         {
             if (IsRunning)
             {
-                Logger.Log("Client is running already");
+                NetCodeLib.Logger.Log("Client is running already");
                 return;
             }
 
@@ -57,7 +57,7 @@ public abstract class ENetClient
         }
         catch (Exception e)
         {
-            Logger.LogErr(e, "Client");
+            NetCodeLib.Logger.LogErr(e, "Client");
         }
     }
 
@@ -86,7 +86,7 @@ public abstract class ENetClient
         var success = Outgoing.TryAdd(OutgoingId, new ClientPacket((byte)opcode, flags, data));
 
         if (!success)
-            Logger.LogWarning($"Failed to add {opcode} to Outgoing queue because of duplicate key");
+            NetCodeLib.Logger.LogWarning($"Failed to add {opcode} to Outgoing queue because of duplicate key");
     }
 
     /// <summary>
@@ -99,13 +99,6 @@ public abstract class ENetClient
         while (Outgoing.ContainsKey(OutgoingId))
             await Task.Delay(1);
     }
-
-    /// <summary>
-    /// Thread safe way of executing client code from other threads.  
-    /// Do not bring non-client vars over to the client thread. 
-    /// Only work with variables that are in the clients thread. 
-    /// </summary>
-    public void ExecuteCode(Action<GameClient> action) => EnetCmds.Enqueue(new ENetClientCmd(ENetClientOpcode.ExecuteCode, action));
 
     protected virtual void Connecting() { }
     protected virtual void ClientCmds(Peer peer) { }
@@ -176,7 +169,7 @@ public abstract class ENetClient
                         var packet = netEvent.Packet;
                         if (packet.Length > GamePacket.MaxSize)
                         {
-                            Logger.LogWarning($"Tried to read packet from server of size {packet.Length} when max packet size is {GamePacket.MaxSize}");
+                            NetCodeLib.Logger.LogWarning($"Tried to read packet from server of size {packet.Length} when max packet size is {GamePacket.MaxSize}");
                             packet.Dispose();
                             continue;
                         }
@@ -214,12 +207,10 @@ public abstract class ENetClient
 public class PacketInfo
 {
     public PacketReader PacketReader { get; set; }
-    public GameClient GameClient { get; set; }
 
-    public PacketInfo(PacketReader reader, GameClient client)
+    public PacketInfo(PacketReader reader)
     {
         PacketReader = reader;
-        GameClient = client;
     }
 }
 

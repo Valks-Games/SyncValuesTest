@@ -43,7 +43,7 @@ public abstract class ENetServer
         {
             if (IsRunning)
             {
-                Logger.Log("Server is running already");
+                NetCodeLib.Logger.Log("Server is running already");
                 return;
             }
 
@@ -55,7 +55,7 @@ public abstract class ENetServer
         }
         catch (Exception e)
         {
-            Logger.LogErr(e, "Server");
+            NetCodeLib.Logger.LogErr(e, "Server");
         }
     }
 
@@ -189,7 +189,7 @@ public abstract class ENetServer
         catch (InvalidOperationException e)
         {
             var message = $"A server is running on port {port} already! {e.Message}";
-            Logger.LogWarning(message);
+            NetCodeLib.Logger.LogWarning(message);
             Cleanup();
             return Task.FromResult(1);
         }
@@ -226,7 +226,7 @@ public abstract class ENetServer
                         var packet = netEvent.Packet;
                         if (packet.Length > GamePacket.MaxSize)
                         {
-                            Logger.LogWarning($"Tried to read packet from client of size {packet.Length} when max packet size is {GamePacket.MaxSize}");
+                            NetCodeLib.Logger.LogWarning($"Tried to read packet from client of size {packet.Length} when max packet size is {GamePacket.MaxSize}");
                             packet.Dispose();
                             continue;
                         }
@@ -265,7 +265,7 @@ public abstract class ENetServer
         if (QueueRestart)
         {
             QueueRestart = false;
-            Net.StartServer(port, maxClients, CancellationTokenSource);
+            NetCodeLib.StartServer(port, maxClients, CancellationTokenSource);
         }
 
         return Task.FromResult(1);
