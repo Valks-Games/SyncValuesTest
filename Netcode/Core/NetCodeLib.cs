@@ -54,14 +54,17 @@ public class NetCodeLib
 
 public class DefaultLogger : ILogger
 {
-	public void Log(object obj) => Console.WriteLine(obj);
-	public void LogWarning(object obj) => Console.WriteLine(obj);
-	public void LogErr(Exception e, string hint = "") => Console.WriteLine($"{hint} {e}");
+	public void Log(object obj, ConsoleColor color = ConsoleColor.Gray) => 
+        Console.WriteLine(obj);
+	public void LogWarning(object obj, ConsoleColor color = ConsoleColor.Yellow) => 
+        Console.WriteLine(obj);
+	public void LogErr(Exception e, string hint = "", ConsoleColor color = ConsoleColor.Red, [CallerFilePath] string filePath = default, [CallerLineNumber] int lineNumber = 0) => 
+        Console.WriteLine($"{hint} {e}");
 }
 
 public interface ILogger
 {
-	public void Log(object obj);
-	public void LogWarning(object obj);
-	public void LogErr(Exception e, string hint = "");
+	void Log(object obj, ConsoleColor color = ConsoleColor.Gray);
+	void LogWarning(object obj, ConsoleColor color = ConsoleColor.Yellow);
+	void LogErr(Exception e, string hint = "", ConsoleColor color = ConsoleColor.Red, [CallerFilePath] string filePath = default, [CallerLineNumber] int lineNumber = 0);
 }

@@ -15,8 +15,17 @@ namespace Test;
 
 public partial class Main : Node
 {
+	public static Logger Logger { get; set; }
+
 	public override void _Ready()
 	{
+		Logger = new Logger();
+		NetCodeLib.Logger = Logger;
 		NetCodeLib.Init();
+	}
+
+	public override void _PhysicsProcess(double delta)
+	{
+		Logger.Update();
 	}
 }
